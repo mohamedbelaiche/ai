@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نبراس AI — OpenRouter Chatbot</title>
+  <meta name="description" content="واجهة محادثة ذكاء اصطناعي حديثة وسريعة تعمل عبر OpenRouter API ومصممة للاستضافة على Vercel">
+  <meta name="theme-color" content="#0a0d14">
+
+  <!-- Favicon SVG -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 14a4 4 0 1 1 4-4 4 4 0 0 1-4 4z'/><path d='m4.93 4.93 4.24 4.24'/><path d='m14.83 14.83 4.24 4.24'/><path d='m14.83 9.17 4.24-4.24'/><path d='m4.93 19.07 4.24-4.24'/></svg>">
+
+  <!-- Google Fonts: Cairo (Arabic) & Outfit (Latin/Numbers) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Highlight.js for code syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <!-- Marked.js for Markdown parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+
+  <!-- DOMPurify to sanitize HTML output -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.9/purify.min.js"></script>
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container" id="appContainer">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h2>نبراس <span>AI</span></h2>
+            <small>OpenRouter Chat</small>
+          </div>
+        </div>
+        <button class="icon-btn sidebar-close-btn" id="closeSidebarBtn" title="إغلاق القائمة">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="sidebar-action">
+        <button class="new-chat-btn" id="newChatBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          <span>محادثة جديدة</span>
+        </button>
+      </div>
+
+      <div class="sidebar-history-section">
+        <div class="history-header">
+          <span>المحادثات السابقة</span>
+          <button class="icon-btn-sm" id="clearAllHistoryBtn" title="مسح كافة المحادثات">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>
+        </div>
+        <div class="chat-history-list" id="chatHistoryList">
+          <!-- Dynamic History Items -->
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="active-model-pill" id="sidebarModelBadge" title="النموذج النشط حالياً">
+          <span class="status-dot"></span>
+          <span class="model-name" id="sidebarModelName">Llama 3.3 70B</span>
+        </div>
+        <button class="sidebar-btn" id="sidebarSettingsBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>الإعدادات</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Navigation Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-btn" id="toggleSidebarBtn" title="القائمة الجانبية">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+
+          <!-- Model Switcher Selector -->
+          <div class="model-selector-wrapper">
+            <button class="model-dropdown-trigger" id="modelDropdownTrigger">
+              <span class="sparkle-icon">✨</span>
+              <span class="current-model-text" id="topbarModelName">Llama 3.3 70B (مجاني)</span>
+              <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="model-dropdown-menu" id="modelDropdownMenu">
+              <div class="model-group-title">النماذج المجانية الأكثر طلباً</div>
+              <button class="model-item" data-model="meta-llama/llama-3.3-70b-instruct:free">
+                <div class="model-item-info">
+                  <strong>Llama 3.3 70B</strong>
+                  <small>مجاني • أداء استثنائي باللغة العربية والإنجليزية</small>
+                </div>
+                <span class="badge free">مجاني</span>
+              </button>
+              <button class="model-item" data-model="google/gemini-2.0-flash-exp:free">
+                <div class="model-item-info">
+                  <strong>Gemini 2.0 Flash</strong>
+                  <small>مجاني • فائق السرعة واستيعاب سياق ضخم</small>
+                </div>
+                <span class="badge free">مجاني</span>
+              </button>
+              <button class="model-item" data-model="deepseek/deepseek-r1:free">
+                <div class="model-item-info">
+                  <strong>DeepSeek R1</strong>
+                  <small>مجاني • قدرات تفكير واستنتاج عميقة</small>
+                </div>
+                <span class="badge free">مجاني</span>
+              </button>
+              
+              <div class="model-group-title">نماذج مدفوعة رائدة</div>
+              <button class="model-item" data-model="deepseek/deepseek-chat">
+                <div class="model-item-info">
+                  <strong>DeepSeek V3</strong>
+                  <small>اقتصادي جداً وممتاز في البرمجة والتحليل</small>
+                </div>
+                <span class="badge paid">اقتصادي</span>
+              </button>
+              <button class="model-item" data-model="openai/gpt-4o-mini">
+                <div class="model-item-info">
+                  <strong>GPT-4o Mini</strong>
+                  <small>أوبن إيه آي • سريع وذكي</small>
+                </div>
+                <span class="badge paid">مدفوع</span>
+              </button>
+              <button class="model-item" data-model="anthropic/claude-3.5-sonnet">
+                <div class="model-item-info">
+                  <strong>Claude 3.5 Sonnet</strong>
+                  <small>أنثروبيك • الأقوى في الفهم والكتابة والبرمجة</small>
+                </div>
+                <span class="badge paid">احترافي</span>
+              </button>
+              <div class="model-menu-divider"></div>
+              <button class="model-item custom-model-trigger" id="customModelBtn">
+                <div class="model-item-info">
+                  <strong>نموذج آخر مخصص...</strong>
+                  <small>اختر من بين 200+ نموذج على OpenRouter</small>
+                </div>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Connection Status Badge -->
+          <div class="connection-status" id="connectionStatus" title="حالة الاتصال بـ OpenRouter">
+            <span class="ping-circle"></span>
+            <span class="status-label" id="connectionStatusText">جاهز</span>
+          </div>
+
+          <!-- Export Chat -->
+          <button class="icon-btn" id="exportChatBtn" title="تصدير المحادثة">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          </button>
+
+          <!-- Clear Current Messages -->
+          <button class="icon-btn" id="clearChatBtn" title="مسح هذه المحادثة">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>
+
+          <!-- RTL / LTR Direction Toggle -->
+          <button class="icon-btn" id="dirToggleBtn" title="تبديل الاتجاه (عربي / English)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+          </button>
+
+          <!-- Theme Toggle -->
+          <button class="icon-btn" id="themeToggleBtn" title="تبديل المظهر (داكن / فاتح)">
+            <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+
+          <!-- Settings Button -->
+          <button class="icon-btn highlight" id="settingsBtn" title="إعدادات المفتاح والنظام">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Chat Messages Container -->
+      <div class="chat-container" id="chatContainer">
+        <!-- Welcome Screen (Visible when no messages exist) -->
+        <div class="welcome-screen" id="welcomeScreen">
+          <div class="welcome-badge">
+            <span class="badge-dot"></span>
+            <span>بوابة الذكاء الاصطناعي الفائق • OpenRouter</span>
+          </div>
+
+          <h1 class="welcome-title">
+            أهلاً بك في <span>نبراس AI</span>
+          </h1>
+          <p class="welcome-subtitle">
+            واجهة دردشة سريعة وأنيقة تدعم أكثر من 200 نموذج ذكاء اصطناعي عبر OpenRouter، مع ميزة البث المباشر للإجابات وتلوين الأكواد البرمجية.
+          </p>
+
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <h4>بث حي فائق السرعة</h4>
+              <p>توليد تدريجي فوري للنصوص عبر تقنية Server-Sent Events</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🌐</div>
+              <h4>تنوع النماذج</h4>
+              <p>اختر بين Llama 3.3, Gemini 2.0, DeepSeek R1, GPT-4o وغيرها</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🛡️</div>
+              <h4>آمن ومستضاف على Vercel</h4>
+              <p>دعم المتغيرات البيئية لحماية مفاتيح API مع تشفير محلي</p>
+            </div>
+          </div>
+
+          <div class="suggestions-section">
+            <h3 class="suggestions-title">ابدأ بمقترح سريع:</h3>
+            <div class="suggestions-grid">
+              <button class="suggestion-card" data-prompt="اكتب لي دالة بايثون تقوم بالتحقق من صحة البريد الإلكتروني والرمز البريدي مع شرح الكود.">
+                <span class="sugg-icon">💻</span>
+                <div class="sugg-text">
+                  <strong>برمجة وبايثون</strong>
+                  <span>دالة للتحقق من البريد والرمز البريدي</span>
+                </div>
+              </button>
+
+              <button class="suggestion-card" data-prompt="اشرح لي تقنية التعلم العميق (Deep Learning) ومفهوم الشبكات العصبية بأسلوب مبسط لأحد المبتدئين.">
+                <span class="sugg-icon">🧠</span>
+                <div class="sugg-text">
+                  <strong>تعلم وشرح</strong>
+                  <span>مفهوم الشبكات العصبية ببساطة</span>
+                </div>
+              </button>
+
+              <button class="suggestion-card" data-prompt="اقترح علي خطة تسويق بالمحتوى لمدة شهر لمتجر إلكتروني يبيع منتجات حرفية وصديقة للبيئة.">
+                <span class="sugg-icon">📈</span>
+                <div class="sugg-text">
+                  <strong>تخطيط وتسويق</strong>
+                  <span>خطة تسويق لمتجر منتجات صديقة للبيئة</span>
+                </div>
+              </button>
+
+              <button class="suggestion-card" data-prompt="صغ رسالة بريد إلكتروني رسمية واحترافية لطلب مقابلة عمل بعد إرسال السيرة الذاتية بأسبوعين.">
+                <span class="sugg-icon">✉️</span>
+                <div class="sugg-text">
+                  <strong>كتابة احترافية</strong>
+                  <span>رسالة متابعة لطلب وظيفة رسمية</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Message Stream -->
+        <div class="messages-stream" id="messagesStream">
+          <!-- Chat messages rendered dynamically -->
+        </div>
+
+        <!-- Scroll to bottom button -->
+        <button class="scroll-bottom-btn" id="scrollBottomBtn" title="الانتقال إلى أحدث رسالة">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+
+      <!-- Bottom Chat Input Section -->
+      <footer class="chat-input-area">
+        <div class="input-box-container">
+          <!-- Textarea wrapper -->
+          <div class="textarea-wrapper">
+            <textarea 
+              id="chatInput" 
+              rows="1" 
+              placeholder="اكتب رسالتك هنا... (اضغط Enter للإرسال، Shift + Enter لسطر جديد)"
+              autocomplete="off"
+            ></textarea>
+          </div>
+
+          <!-- Controls Bar inside input -->
+          <div class="input-controls">
+            <div class="input-left-tools">
+              <span class="token-hint" id="tokenHint">جاهز للكتابة</span>
+            </div>
+            <div class="input-right-tools">
+              <!-- Stop Generating Button (Hidden by default) -->
+              <button class="action-btn stop-btn hidden" id="stopGenerationBtn" title="إيقاف التوليد">
+                <span class="stop-icon"></span>
+                <span>إيقاف</span>
+              </button>
+
+              <!-- Send Button -->
+              <button class="action-btn send-btn" id="sendBtn" title="إرسال الرسالة">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="22" y1="2" x2="11" y2="13"/>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="disclaimer-text">
+          <span>قد يصدر عن النماذج بعض الأخطاء • صُمم للنشر بنقرة واحدة على Vercel و GitHub</span>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <h3>إعدادات OpenRouter</h3>
+        </div>
+        <button class="icon-btn" id="closeSettingsBtn" title="إغلاق">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- API Key Field -->
+        <div class="form-group">
+          <label for="apiKeyInput">
+            <span>مفتاح OpenRouter API Key</span>
+            <a href="https://openrouter.ai/keys" target="_blank" rel="noopener" class="link-hint">احصل على مفتاح مجاني ↗</a>
+          </label>
+          <div class="input-with-action">
+            <input 
+              type="password" 
+              id="apiKeyInput" 
+              placeholder="sk-or-v1-xxxxxxxxxxxxxxxxxxxx" 
+              autocomplete="off"
+            >
+            <button type="button" class="icon-btn-inner" id="toggleApiKeyVisibility" title="إظهار / إخفاء المفتاح">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <small class="helper-text">
+            يُحفظ المفتاح محلياً بأمان في متصفحك. إذا كنت تستضيف التطبيق على Vercel، يمكنك أيضاً تعيين المتغير <code>OPENROUTER_API_KEY</code> في إعدادات المشروع دون الحاجة لإدخاله هنا.
+          </small>
+        </div>
+
+        <!-- Model Selection -->
+        <div class="form-group">
+          <label for="modelSelect">النموذج الافتراضي (Model)</label>
+          <select id="modelSelect">
+            <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B Instruct (مجاني - مقترح)</option>
+            <option value="google/gemini-2.0-flash-exp:free">Google Gemini 2.0 Flash (مجاني - فائق السرعة)</option>
+            <option value="deepseek/deepseek-r1:free">DeepSeek R1 (مجاني - استنتاج عميق)</option>
+            <option value="deepseek/deepseek-chat">DeepSeek V3 (اقتصادي جداً)</option>
+            <option value="openai/gpt-4o-mini">OpenAI GPT-4o Mini</option>
+            <option value="anthropic/claude-3.5-sonnet">Anthropic Claude 3.5 Sonnet</option>
+            <option value="custom">نموذج مخصص يدوي (Custom ID)...</option>
+          </select>
+        </div>
+
+        <!-- Custom Model Input (shown if custom is chosen) -->
+        <div class="form-group hidden" id="customModelGroup">
+          <label for="customModelInput">معرّف النموذج المخصص (Model Identifier)</label>
+          <input type="text" id="customModelInput" placeholder="مثال: mistralai/mistral-large-2411">
+          <small class="helper-text">يمكنك استعراض كافة المعرّفات من موقع <a href="https://openrouter.ai/models" target="_blank" rel="noopener">OpenRouter Models</a>.</small>
+        </div>
+
+        <!-- Temperature Slider -->
+        <div class="form-group">
+          <div class="range-header">
+            <label for="temperatureSlider">درجة الإبداع (Temperature): <strong id="tempValue">0.7</strong></label>
+          </div>
+          <input type="range" id="temperatureSlider" min="0" max="1.5" step="0.05" value="0.7">
+          <div class="range-labels">
+            <span>دقيق ومنطقي (0.0)</span>
+            <span>متوازن (0.7)</span>
+            <span>إبداعي جداً (1.5)</span>
+          </div>
+        </div>
+
+        <!-- System Prompt -->
+        <div class="form-group">
+          <label for="systemPromptInput">تعليمات النظام (System Prompt)</label>
+          <textarea id="systemPromptInput" rows="3" placeholder="أنت مساعد ذكي ومفيد ولطيف، تجيب بدقة وموضوعية وباللغة المناسبة..."></textarea>
+        </div>
+
+        <!-- Connection Mode -->
+        <div class="form-group">
+          <label for="endpointMode">طريقة معالجة الطلبات</label>
+          <select id="endpointMode">
+            <option value="auto">تلقائي (عبر Vercel /api/chat مع إمكانية الاتصال المباشر)</option>
+            <option value="direct">مباشر دائماً من المتصفح إلى OpenRouter</option>
+            <option value="proxy">عبر خادم Vercel فقط (/api/chat)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelSettingsBtn">إلغاء</button>
+        <button class="btn btn-primary" id="saveSettingsBtn">حفظ التغييرات</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Main Application Script -->
+  <script src="app.js"></script>
+</body>
+</html>
