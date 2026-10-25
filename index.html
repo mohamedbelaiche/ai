@@ -71,7 +71,7 @@
       <div class="sidebar-footer">
         <div class="active-model-pill" id="sidebarModelBadge" title="النموذج النشط حالياً">
           <span class="status-dot"></span>
-          <span class="model-name" id="sidebarModelName">Gemma 4 31B (مجاني)</span>
+          <span class="model-name" id="sidebarModelName">Flint (مجاني)</span>
         </div>
         <button class="sidebar-btn" id="sidebarSettingsBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -96,29 +96,29 @@
           <div class="model-selector-wrapper">
             <button class="model-dropdown-trigger" id="modelDropdownTrigger">
               <span class="sparkle-icon">✨</span>
-              <span class="current-model-text" id="topbarModelName">Gemma 4 31B (مجاني)</span>
+              <span class="current-model-text" id="topbarModelName">Flint (مجاني)</span>
               <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="model-dropdown-menu" id="modelDropdownMenu">
               <div class="model-group-title">النماذج المجانية المتوفرة</div>
-              <button class="model-item" data-model="google/gemma-4-31b-it:free">
+              <button class="model-item" data-model="recursive/flint-v1.0:free">
                 <div class="model-item-info">
-                  <strong>Gemma 4 31B</strong>
-                  <small>مجاني • من جوجل، ممتاز بالعربية وسياق طويل</small>
+                  <strong>Flint</strong>
+                  <small>مجاني • سريع ومباشر وودود بالعربية (مقترح)</small>
                 </div>
                 <span class="badge free">مجاني</span>
               </button>
-              <button class="model-item" data-model="nvidia/nemotron-3-super-120b-a12b:free">
+              <button class="model-item" data-model="nvidia/nemotron-3-ultra-550b-a55b:free">
                 <div class="model-item-info">
-                  <strong>Nemotron 3 Super 120B</strong>
-                  <small>مجاني • نموذج ضخم قوي من إنفيديا</small>
+                  <strong>Nemotron 3 Ultra 550B</strong>
+                  <small>مجاني • نموذج ضخم من إنفيديا بسياق مليون رمز</small>
                 </div>
                 <span class="badge free">مجاني</span>
               </button>
-              <button class="model-item" data-model="thinkingmachines/inkling:free">
+              <button class="model-item" data-model="dots-studio/dots-3-note-preview:free">
                 <div class="model-item-info">
-                  <strong>Inkling</strong>
-                  <small>مجاني • سياق ضخم يصل إلى مليون رمز</small>
+                  <strong>Dots 3 Note</strong>
+                  <small>مجاني • يفكرك بإجابات مدروسة ومنسقة</small>
                 </div>
                 <span class="badge free">مجاني</span>
               </button>
@@ -358,9 +358,9 @@
         <div class="form-group">
           <label for="modelSelect">النموذج الافتراضي (Model)</label>
           <select id="modelSelect">
-            <option value="google/gemma-4-31b-it:free">Google Gemma 4 31B (مجاني - مقترح)</option>
-            <option value="nvidia/nemotron-3-super-120b-a12b:free">NVIDIA Nemotron 3 Super 120B (مجاني - قوي)</option>
-            <option value="thinkingmachines/inkling:free">Inkling (مجاني - سياق مليون رمز)</option>
+            <option value="recursive/flint-v1.0:free">Flint (مجاني - سريع ومباشر - مقترح)</option>
+            <option value="nvidia/nemotron-3-ultra-550b-a55b:free">NVIDIA Nemotron 3 Ultra 550B (مجاني - ضخم)</option>
+            <option value="dots-studio/dots-3-note-preview:free">Dots 3 Note (مجاني - مدروس)</option>
             <option value="deepseek/deepseek-chat">DeepSeek V3 (اقتصادي جداً)</option>
             <option value="openai/gpt-4o-mini">OpenAI GPT-4o Mini</option>
             <option value="anthropic/claude-sonnet-5.5">Anthropic Claude Sonnet 5.5</option>

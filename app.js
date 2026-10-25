@@ -8,7 +8,7 @@
 // ==========================================================================
 const DEFAULT_SETTINGS = {
   apiKey: '',
-  model: 'google/gemma-4-31b-it:free',
+  model: 'recursive/flint-v1.0:free',
   customModel: '',
   temperature: 0.7,
   systemPrompt: 'أنت مساعد ذكي ومفيد ولطيف وواسع المعرفة. تجيب بدقة وبأسلوب منظم وواضح، وتستخدم التنسيق المناسب (عناوين، نقاط، جداول، وأكواد برمجية) لتقديم أفضل تجربة للمستخدم.',
@@ -18,9 +18,9 @@ const DEFAULT_SETTINGS = {
 };
 
 const MODEL_NAMES = {
-  'google/gemma-4-31b-it:free': 'Gemma 4 31B (مجاني)',
-  'nvidia/nemotron-3-super-120b-a12b:free': 'Nemotron 3 Super 120B (مجاني)',
-  'thinkingmachines/inkling:free': 'Inkling (مجاني)',
+  'recursive/flint-v1.0:free': 'Flint (مجاني)',
+  'nvidia/nemotron-3-ultra-550b-a55b:free': 'Nemotron 3 Ultra 550B (مجاني)',
+  'dots-studio/dots-3-note-preview:free': 'Dots 3 Note (مجاني)',
   'deepseek/deepseek-chat': 'DeepSeek V3',
   'openai/gpt-4o-mini': 'GPT-4o Mini',
   'anthropic/claude-sonnet-5.5': 'Claude Sonnet 5.5',
@@ -57,7 +57,7 @@ class ChatApp {
     try {
       const stored = localStorage.getItem('nibras_settings');
       const settings = stored ? { ...DEFAULT_SETTINGS, ...JSON.parse(stored) } : { ...DEFAULT_SETTINGS };
-      const retiredModels = ['meta-llama/llama-3.3-70b-instruct:free', 'google/gemini-2.0-flash-exp:free', 'deepseek/deepseek-r1:free', 'anthropic/claude-3.5-sonnet'];
+      const retiredModels = ['meta-llama/llama-3.3-70b-instruct:free', 'google/gemini-2.0-flash-exp:free', 'deepseek/deepseek-r1:free', 'anthropic/claude-3.5-sonnet', 'google/gemma-4-31b-it:free', 'nvidia/nemotron-3-super-120b-a12b:free', 'thinkingmachines/inkling:free'];
       if (retiredModels.includes(settings.model)) {
         settings.model = DEFAULT_SETTINGS.model;
       }
@@ -701,7 +701,7 @@ class ChatApp {
           'Authorization': `Bearer ${key}`,
           'Content-Type': 'application/json',
           'HTTP-Referer': window.location.origin,
-          'X-Title': 'نبراس AI — OpenRouter Chatbot',
+          'X-Title': 'Nibras AI Chatbot',
         },
         body: JSON.stringify({
           model: payload.model,
