@@ -47,7 +47,7 @@ export default async function handler(req) {
       );
     }
 
-    const selectedModel = model || 'meta-llama/llama-3.3-70b-instruct:free';
+    const selectedModel = model || 'google/gemma-4-31b-it:free';
     const siteUrl = req.headers.get('origin') || 'https://vercel.app';
 
     const openRouterResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {

@@ -8,7 +8,7 @@
 // ==========================================================================
 const DEFAULT_SETTINGS = {
   apiKey: '',
-  model: 'meta-llama/llama-3.3-70b-instruct:free',
+  model: 'google/gemma-4-31b-it:free',
   customModel: '',
   temperature: 0.7,
   systemPrompt: 'أنت مساعد ذكي ومفيد ولطيف وواسع المعرفة. تجيب بدقة وبأسلوب منظم وواضح، وتستخدم التنسيق المناسب (عناوين، نقاط، جداول، وأكواد برمجية) لتقديم أفضل تجربة للمستخدم.',
@@ -18,12 +18,12 @@ const DEFAULT_SETTINGS = {
 };
 
 const MODEL_NAMES = {
-  'meta-llama/llama-3.3-70b-instruct:free': 'Llama 3.3 70B (مجاني)',
-  'google/gemini-2.0-flash-exp:free': 'Gemini 2.0 Flash (مجاني)',
-  'deepseek/deepseek-r1:free': 'DeepSeek R1 (مجاني)',
+  'google/gemma-4-31b-it:free': 'Gemma 4 31B (مجاني)',
+  'nvidia/nemotron-3-super-120b-a12b:free': 'Nemotron 3 Super 120B (مجاني)',
+  'thinkingmachines/inkling:free': 'Inkling (مجاني)',
   'deepseek/deepseek-chat': 'DeepSeek V3',
   'openai/gpt-4o-mini': 'GPT-4o Mini',
-  'anthropic/claude-3.5-sonnet': 'Claude 3.5 Sonnet',
+  'anthropic/claude-sonnet-5.5': 'Claude Sonnet 5.5',
 };
 
 class ChatApp {
@@ -56,7 +56,12 @@ class ChatApp {
   loadSettings() {
     try {
       const stored = localStorage.getItem('nibras_settings');
-      return stored ? { ...DEFAULT_SETTINGS, ...JSON.parse(stored) } : { ...DEFAULT_SETTINGS };
+      const settings = stored ? { ...DEFAULT_SETTINGS, ...JSON.parse(stored) } : { ...DEFAULT_SETTINGS };
+      const retiredModels = ['meta-llama/llama-3.3-70b-instruct:free', 'google/gemini-2.0-flash-exp:free', 'deepseek/deepseek-r1:free', 'anthropic/claude-3.5-sonnet'];
+      if (retiredModels.includes(settings.model)) {
+        settings.model = DEFAULT_SETTINGS.model;
+      }
+      return settings;
     } catch (e) {
       console.warn('Could not load settings from localStorage:', e);
       return { ...DEFAULT_SETTINGS };
@@ -564,7 +569,7 @@ class ChatApp {
 
       // Model determination
       const selectedModel = this.settings.model === 'custom' 
-        ? (this.settings.customModel.trim() || 'meta-llama/llama-3.3-70b-instruct:free')
+        ? (this.settings.customModel.trim() || DEFAULT_SETTINGS.model)
         : this.settings.model;
 
       // Abort controller for cancellation

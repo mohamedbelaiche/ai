@@ -71,7 +71,7 @@
       <div class="sidebar-footer">
         <div class="active-model-pill" id="sidebarModelBadge" title="النموذج النشط حالياً">
           <span class="status-dot"></span>
-          <span class="model-name" id="sidebarModelName">Llama 3.3 70B</span>
+          <span class="model-name" id="sidebarModelName">Gemma 4 31B (مجاني)</span>
         </div>
         <button class="sidebar-btn" id="sidebarSettingsBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -96,29 +96,29 @@
           <div class="model-selector-wrapper">
             <button class="model-dropdown-trigger" id="modelDropdownTrigger">
               <span class="sparkle-icon">✨</span>
-              <span class="current-model-text" id="topbarModelName">Llama 3.3 70B (مجاني)</span>
+              <span class="current-model-text" id="topbarModelName">Gemma 4 31B (مجاني)</span>
               <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="model-dropdown-menu" id="modelDropdownMenu">
-              <div class="model-group-title">النماذج المجانية الأكثر طلباً</div>
-              <button class="model-item" data-model="meta-llama/llama-3.3-70b-instruct:free">
+              <div class="model-group-title">النماذج المجانية المتوفرة</div>
+              <button class="model-item" data-model="google/gemma-4-31b-it:free">
                 <div class="model-item-info">
-                  <strong>Llama 3.3 70B</strong>
-                  <small>مجاني • أداء استثنائي باللغة العربية والإنجليزية</small>
+                  <strong>Gemma 4 31B</strong>
+                  <small>مجاني • من جوجل، ممتاز بالعربية وسياق طويل</small>
                 </div>
                 <span class="badge free">مجاني</span>
               </button>
-              <button class="model-item" data-model="google/gemini-2.0-flash-exp:free">
+              <button class="model-item" data-model="nvidia/nemotron-3-super-120b-a12b:free">
                 <div class="model-item-info">
-                  <strong>Gemini 2.0 Flash</strong>
-                  <small>مجاني • فائق السرعة واستيعاب سياق ضخم</small>
+                  <strong>Nemotron 3 Super 120B</strong>
+                  <small>مجاني • نموذج ضخم قوي من إنفيديا</small>
                 </div>
                 <span class="badge free">مجاني</span>
               </button>
-              <button class="model-item" data-model="deepseek/deepseek-r1:free">
+              <button class="model-item" data-model="thinkingmachines/inkling:free">
                 <div class="model-item-info">
-                  <strong>DeepSeek R1</strong>
-                  <small>مجاني • قدرات تفكير واستنتاج عميقة</small>
+                  <strong>Inkling</strong>
+                  <small>مجاني • سياق ضخم يصل إلى مليون رمز</small>
                 </div>
                 <span class="badge free">مجاني</span>
               </button>
@@ -138,9 +138,9 @@
                 </div>
                 <span class="badge paid">مدفوع</span>
               </button>
-              <button class="model-item" data-model="anthropic/claude-3.5-sonnet">
+              <button class="model-item" data-model="anthropic/claude-sonnet-5.5">
                 <div class="model-item-info">
-                  <strong>Claude 3.5 Sonnet</strong>
+                  <strong>Claude Sonnet 5.5</strong>
                   <small>أنثروبيك • الأقوى في الفهم والكتابة والبرمجة</small>
                 </div>
                 <span class="badge paid">احترافي</span>
@@ -358,12 +358,12 @@
         <div class="form-group">
           <label for="modelSelect">النموذج الافتراضي (Model)</label>
           <select id="modelSelect">
-            <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B Instruct (مجاني - مقترح)</option>
-            <option value="google/gemini-2.0-flash-exp:free">Google Gemini 2.0 Flash (مجاني - فائق السرعة)</option>
-            <option value="deepseek/deepseek-r1:free">DeepSeek R1 (مجاني - استنتاج عميق)</option>
+            <option value="google/gemma-4-31b-it:free">Google Gemma 4 31B (مجاني - مقترح)</option>
+            <option value="nvidia/nemotron-3-super-120b-a12b:free">NVIDIA Nemotron 3 Super 120B (مجاني - قوي)</option>
+            <option value="thinkingmachines/inkling:free">Inkling (مجاني - سياق مليون رمز)</option>
             <option value="deepseek/deepseek-chat">DeepSeek V3 (اقتصادي جداً)</option>
             <option value="openai/gpt-4o-mini">OpenAI GPT-4o Mini</option>
-            <option value="anthropic/claude-3.5-sonnet">Anthropic Claude 3.5 Sonnet</option>
+            <option value="anthropic/claude-sonnet-5.5">Anthropic Claude Sonnet 5.5</option>
             <option value="custom">نموذج مخصص يدوي (Custom ID)...</option>
           </select>
         </div>
